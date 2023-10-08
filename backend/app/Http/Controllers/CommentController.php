@@ -9,9 +9,11 @@ class CommentController extends Controller
 {
     private $validationRules = [
         "body" => "required|string",
+        "article_id" => "required|integer",
     ];
     private $fillable = [
         "body",
+        "article_id",
     ];
     /**
      * Display a listing of the resource.
