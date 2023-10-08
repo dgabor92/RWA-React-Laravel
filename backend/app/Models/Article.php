@@ -11,4 +11,8 @@ class Article extends Model
     protected $table = "articles";
     protected $guarded = [];
     protected $hidden = [];
+    protected $casts = [
+        "tagList" => "array",
+        "author" => "json",
+    ];
 }
