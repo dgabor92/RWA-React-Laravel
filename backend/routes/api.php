@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,6 +40,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('profiles/{username}/follow', [ProfileController::class, 'unfollowUser']);
     Route::patch('settings/password', [PasswordController::class, 'update']);
     Route::resource('articles', ArticleController::class)->except(['create', 'edit']);
+    Route::get('articles/feed', [ArticleController::class, 'feed']);
+    Route::resource('articles/{slug}/comments', CommentController::class)->except(['create', 'edit']);
 });
 
 Route::group(['middleware' => 'guest:api'], function () {

@@ -13,7 +13,6 @@ class ArticleController extends Controller
         "description" => "required|string",
         "body" => "required|string",
         "tagList" => "required|array",
-        "author" => "required|json",
     ];
 
     private $fillable = [
@@ -22,14 +21,18 @@ class ArticleController extends Controller
         "description",
         "body",
         "tagList",
-        "author",
     ];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Article::all();  // return all articles
+        // return Article::all();  // return all articles
+        $articles = Article::all();
+        return response()->json([
+            'articles' => $articles,
+            "articlesCount" => $articles->count(),
+        ]);
     }
 
     /**
@@ -45,13 +48,22 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
         $request->validate($this->validationRules);
         $article = new Article();
         foreach ($this->fillable as $field) {
             $article->$field = $request->$field;
         }
+        $article->author = [
+            "username" => $user->username,
+            "bio" => $user->bio,
+            "image" => $user->image,
+            "following" => false
+        ];
         $article->save();
-        return $article;
+        return response()->json([
+            'article' => $article,
+        ]);
     }
 
     /**
@@ -90,6 +102,17 @@ class ArticleController extends Controller
             'success' => true,
             'message' => 'Article deleted',
             "status" => 204
+        ]);
+    }
+
+    function feedArticles(Request $request)
+    {
+        // return multiple articles where author is in following list
+        $author_name = $request->author;
+        $articles = Article::where('author', $author_name)->get();
+        return response()->json([
+            'articles' => $articles,
+            "articlesCount" => $articles->count(),
         ]);
     }
 }
