@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('profiles/{username}/follow', [ProfileController::class, 'followUser']);
     Route::delete('profiles/{username}/follow', [ProfileController::class, 'unfollowUser']);
     Route::patch('settings/password', [PasswordController::class, 'update']);
+    Route::resource('articles', ArticleController::class)->except(['create', 'edit']);
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
